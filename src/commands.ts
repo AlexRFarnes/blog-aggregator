@@ -2,7 +2,10 @@ import { exit } from "node:process";
 
 export type CommandsRegistry = Record<string, CommandHandler>;
 
-export type CommandHandler = (commandName: string, ...args: string[]) => void;
+export type CommandHandler = (
+  commandName: string,
+  ...args: string[]
+) => Promise<void>;
 
 export function registerCommand(
   registry: CommandsRegistry,
@@ -12,15 +15,17 @@ export function registerCommand(
   registry[commandName] = handler;
 }
 
-export function runCommand(
+export async function runCommand(
   registry: CommandsRegistry,
   commandName: string,
   ...args: string[]
 ) {
-  if (!registry[commandName]) {
+  const command = registry[commandName];
+
+  if (!command) {
     console.log("command not recognized");
     exit(1);
   }
 
-  registry[commandName](commandName, ...args);
+  command(commandName, ...args);
 }
