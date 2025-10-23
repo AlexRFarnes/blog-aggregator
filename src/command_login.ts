@@ -2,7 +2,7 @@ import { exit } from "node:process";
 import { setUser } from "./config";
 import { getUser } from "./db/queries/users";
 
-export async function handlerLogin(commandName: string, ...args: string[]) {
+export async function handleLogin(commandName: string, ...args: string[]) {
   if (args.length === 0) {
     console.log("username is required");
     exit(1);
