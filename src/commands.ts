@@ -27,5 +27,5 @@ export async function runCommand(
     exit(1);
   }
 
-  command(commandName, ...args);
+  await command(commandName, ...args);
 }
