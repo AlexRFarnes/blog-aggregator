@@ -21,3 +21,8 @@ export async function deleteAllUsers() {
     return false;
   }
 }
+
+export async function getAllUsers() {
+  const result = await db.select().from(users).orderBy(users.name);
+  return result;
+}

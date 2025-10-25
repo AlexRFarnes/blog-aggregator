@@ -2,7 +2,7 @@ import { exit } from "node:process";
 import { createUser, getUser } from "./db/queries/users";
 import { setUser } from "./config";
 
-export async function handleRegister(commandName: string, ...args: string[]) {
+export async function register(commandName: string, ...args: string[]) {
   if (args.length === 0) {
     console.log("username is required");
     exit(1);

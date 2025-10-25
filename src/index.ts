@@ -1,15 +1,17 @@
 import { argv, exit } from "node:process";
 import type { CommandsRegistry } from "./commands";
 import { registerCommand, runCommand } from "./commands";
-import { handleLogin } from "./command_login";
-import { handleRegister } from "./command_register";
-import { handleReset } from "./command_reset";
+import { login } from "./command_login";
+import { register } from "./command_register";
+import { reset } from "./command_reset";
+import { getUsers } from "./command_users";
 
 async function main() {
   const commands: CommandsRegistry = {};
-  registerCommand(commands, "login", handleLogin);
-  registerCommand(commands, "register", handleRegister);
-  registerCommand(commands, "reset", handleReset);
+  registerCommand(commands, "login", login);
+  registerCommand(commands, "register", register);
+  registerCommand(commands, "reset", reset);
+  registerCommand(commands, "users", getUsers);
 
   const cliArgs = argv.slice(2);
 
