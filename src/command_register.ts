@@ -3,23 +3,25 @@ import { createUser, getUser } from "./db/queries/users";
 import { setUser } from "./config";
 
 export async function register(commandName: string, ...args: string[]) {
-  if (args.length === 0) {
-    console.log("username is required");
-    exit(1);
+  if (args.length !== 1) {
+    throw new Error(`usage: ${commandName} <name>`);
   }
 
   const userName = args[0];
 
   const userExists = await getUser(userName);
   if (userExists) {
-    console.log("user already exists");
-    exit(1);
+    throw new Error(`${userName} already registered`);
   }
 
   const user = await createUser(userName);
 
+  if (!user) {
+    throw new Error(`Error when trying to register ${userName}`);
+  }
+
   setUser(user.name);
 
-  console.log("user was created successfully");
+  console.log("User was created successfully");
   console.log(user);
 }

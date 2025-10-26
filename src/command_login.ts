@@ -3,20 +3,18 @@ import { setUser } from "./config";
 import { getUser } from "./db/queries/users";
 
 export async function login(commandName: string, ...args: string[]) {
-  if (args.length === 0) {
-    console.log("username is required");
-    exit(1);
+  if (args.length !== 1) {
+    throw new Error(`usage: ${commandName} <name>`);
   }
   const userName = args[0];
 
-  const user = await getUser(userName);
+  const registeredUser = await getUser(userName);
 
-  if (!user) {
-    console.log(`user doesn't exist`);
-    exit(1);
+  if (!registeredUser) {
+    throw new Error(`user ${userName} not found`);
   }
 
-  setUser(user.name);
+  setUser(registeredUser.name);
 
-  console.log(`user ${user.name} has been set`);
+  console.log("User switched successfully!");
 }

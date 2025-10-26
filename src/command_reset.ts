@@ -7,6 +7,4 @@ export async function reset(commandName: string, ...args: string[]) {
     console.log("all entries deleted from users table");
     return;
   }
-  console.log("something went wrong when trying to reset the table");
-  exit(1);
 }

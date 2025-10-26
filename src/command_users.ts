@@ -6,10 +6,6 @@ import { getCurrentUser } from "./config";
 export async function getUsers(commandName: string, ...args: string[]) {
   const users: SelectUser[] = await getAllUsers();
 
-  if (users.length === 0) {
-    console.log("no register users were found");
-    exit(0);
-  }
   const currentUser = getCurrentUser();
 
   for (const user of users) {
