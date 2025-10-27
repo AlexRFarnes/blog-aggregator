@@ -6,6 +6,7 @@ import { register } from "./command_register";
 import { reset } from "./command_reset";
 import { getUsers } from "./command_users";
 import { aggregate } from "./command_aggregate";
+import { addFeed } from "./command_feed";
 
 async function main() {
   const commands: CommandsRegistry = {};
@@ -14,6 +15,7 @@ async function main() {
   registerCommand(commands, "reset", reset);
   registerCommand(commands, "users", getUsers);
   registerCommand(commands, "agg", aggregate);
+  registerCommand(commands, "addfeed", addFeed);
 
   const cliArgs = argv.slice(2);
 

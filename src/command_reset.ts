@@ -1,4 +1,3 @@
-import { exit } from "node:process";
 import { deleteAllUsers } from "./db/queries/users";
 
 export async function reset(commandName: string, ...args: string[]) {

@@ -1,10 +1,9 @@
-import { exit } from "node:process";
 import { createUser, getUser } from "./db/queries/users";
 import { setUser } from "./config";
 
 export async function register(commandName: string, ...args: string[]) {
   if (args.length !== 1) {
-    throw new Error(`usage: ${commandName} <name>`);
+    throw new Error(`usage: ${commandName} <user_name>`);
   }
 
   const userName = args[0];

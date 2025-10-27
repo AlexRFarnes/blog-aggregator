@@ -1,10 +1,9 @@
-import { exit } from "node:process";
 import { setUser } from "./config";
 import { getUser } from "./db/queries/users";
 
 export async function login(commandName: string, ...args: string[]) {
   if (args.length !== 1) {
-    throw new Error(`usage: ${commandName} <name>`);
+    throw new Error(`usage: ${commandName} <user_name>`);
   }
   const userName = args[0];
 
