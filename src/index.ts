@@ -1,21 +1,24 @@
 import { argv, exit } from "node:process";
-import type { CommandsRegistry } from "./commands";
-import { registerCommand, runCommand } from "./commands";
-import { login } from "./command_login";
-import { register } from "./command_register";
-import { reset } from "./command_reset";
-import { getUsers } from "./command_users";
-import { aggregate } from "./command_aggregate";
-import { addFeed } from "./command_feed";
+import type { CommandsRegistry } from "./commands/commands";
+import { registerCommand, runCommand } from "./commands/commands";
+import { handlerReset } from "./commands/reset";
+import {
+  handlerListUsers,
+  handlerLogin,
+  handlerRegister,
+} from "./commands/users";
+import { handlerAggregate } from "./commands/aggregate";
+import { handlerAddFeed, handlerListFeeds } from "./commands/feeds";
 
 async function main() {
   const commands: CommandsRegistry = {};
-  registerCommand(commands, "login", login);
-  registerCommand(commands, "register", register);
-  registerCommand(commands, "reset", reset);
-  registerCommand(commands, "users", getUsers);
-  registerCommand(commands, "agg", aggregate);
-  registerCommand(commands, "addfeed", addFeed);
+  registerCommand(commands, "login", handlerLogin);
+  registerCommand(commands, "register", handlerRegister);
+  registerCommand(commands, "reset", handlerReset);
+  registerCommand(commands, "users", handlerListUsers);
+  registerCommand(commands, "agg", handlerAggregate);
+  registerCommand(commands, "addfeed", handlerAddFeed);
+  registerCommand(commands, "feeds", handlerListFeeds);
 
   const cliArgs = argv.slice(2);
 

@@ -1,5 +1,4 @@
 import { XMLParser } from "fast-xml-parser";
-import { exit } from "node:process";
 
 type RSSFeed = {
   channel: {

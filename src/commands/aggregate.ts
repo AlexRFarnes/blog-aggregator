@@ -1,7 +1,6 @@
-import { exit } from "node:process";
-import { fetchFeed } from "./utils/fetch";
+import { fetchFeed } from "../utils/rss";
 
-export async function aggregate(commandName: string, ...args: string[]) {
+export async function handlerAggregate(commandName: string, ...args: string[]) {
   //   if (args.length === 0) {
   //     console.log("an url is required");
   //     exit(1);
