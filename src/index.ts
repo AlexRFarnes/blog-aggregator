@@ -10,6 +10,7 @@ import {
 import { handlerAggregate } from "./commands/aggregate";
 import { handlerAddFeed, handlerListFeeds } from "./commands/feeds";
 import { handlerFollow, getFeedFollowsForUser } from "./commands/follow";
+import { middlewareLoggedIn } from "./utils/middleware";
 
 async function main() {
   const commands: CommandsRegistry = {};
@@ -18,10 +19,14 @@ async function main() {
   registerCommand(commands, "reset", handlerReset);
   registerCommand(commands, "users", handlerListUsers);
   registerCommand(commands, "agg", handlerAggregate);
-  registerCommand(commands, "addfeed", handlerAddFeed);
+  registerCommand(commands, "addfeed", middlewareLoggedIn(handlerAddFeed));
   registerCommand(commands, "feeds", handlerListFeeds);
-  registerCommand(commands, "follow", handlerFollow);
-  registerCommand(commands, "following", getFeedFollowsForUser);
+  registerCommand(commands, "follow", middlewareLoggedIn(handlerFollow));
+  registerCommand(
+    commands,
+    "following",
+    middlewareLoggedIn(getFeedFollowsForUser)
+  );
 
   const cliArgs = argv.slice(2);
 

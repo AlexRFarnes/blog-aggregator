@@ -4,20 +4,17 @@ import { getFeedByUrl } from "src/db/queries/feeds";
 import { getUser } from "src/db/queries/users";
 import { getAllFollowedFeeds } from "src/db/queries/feedFollow";
 import { printFeedFollow } from "src/utils/printFeedFollow";
+import { User } from "src/db/schema/schema";
 
-export async function handlerFollow(commandName: string, ...args: string[]) {
+export async function handlerFollow(
+  commandName: string,
+  user: User,
+  ...args: string[]
+) {
   if (args.length !== 1) {
     throw new Error(`usage: ${commandName} <url>`);
   }
-
   const url = args[0];
-
-  const currentUser = getCurrentUser();
-  const user = await getUser(currentUser);
-
-  if (!user) {
-    throw new Error(`User ${currentUser} not found`);
-  }
 
   const feed = await getFeedByUrl(url);
 
@@ -36,15 +33,9 @@ export async function handlerFollow(commandName: string, ...args: string[]) {
 
 export async function getFeedFollowsForUser(
   commandName: string,
+  user: User,
   ...args: string[]
 ) {
-  const currentUser = getCurrentUser();
-  const user = await getUser(currentUser);
-
-  if (!user) {
-    throw new Error(`User ${currentUser} not found`);
-  }
-
   const followedFeeds = await getAllFollowedFeeds(user);
 
   if (followedFeeds.length === 0) {

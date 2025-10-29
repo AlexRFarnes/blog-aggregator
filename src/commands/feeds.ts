@@ -5,16 +5,13 @@ import { createFeed, getAllFeeds } from "../db/queries/feeds";
 import { getUser } from "../db/queries/users";
 import { Feed, User } from "../db/schema/schema";
 
-export async function handlerAddFeed(commandName: string, ...args: string[]) {
+export async function handlerAddFeed(
+  commandName: string,
+  user: User,
+  ...args: string[]
+) {
   if (args.length !== 2) {
     throw new Error(`usage: ${commandName} <feed_name> <url>`);
-  }
-
-  const currentUser = getCurrentUser();
-  const user = await getUser(currentUser);
-
-  if (!user) {
-    throw new Error(`User ${currentUser} not found`);
   }
 
   const feedName = args[0];
