@@ -9,7 +9,11 @@ import {
 } from "./commands/users";
 import { handlerAggregate } from "./commands/aggregate";
 import { handlerAddFeed, handlerListFeeds } from "./commands/feeds";
-import { handlerFollow, getFeedFollowsForUser } from "./commands/follow";
+import {
+  handlerFollow,
+  getFeedFollowsForUser,
+  handlerUnfollow,
+} from "./commands/follow";
 import { middlewareLoggedIn } from "./utils/middleware";
 
 async function main() {
@@ -27,6 +31,7 @@ async function main() {
     "following",
     middlewareLoggedIn(getFeedFollowsForUser)
   );
+  registerCommand(commands, "unfollow", middlewareLoggedIn(handlerUnfollow));
 
   const cliArgs = argv.slice(2);
 

@@ -1,5 +1,5 @@
 import { getCurrentUser } from "src/config";
-import { createFeedFollow } from "src/db/queries/feedFollow";
+import { createFeedFollow, deleteFeedFollow } from "src/db/queries/feedFollow";
 import { getFeedByUrl } from "src/db/queries/feeds";
 import { getUser } from "src/db/queries/users";
 import { getAllFollowedFeeds } from "src/db/queries/feedFollow";
@@ -48,4 +48,26 @@ export async function getFeedFollowsForUser(
   for (const entry of followedFeeds) {
     console.log(`- ${entry.feedName}`);
   }
+}
+
+export async function handlerUnfollow(
+  commandName: string,
+  user: User,
+  ...args: string[]
+) {
+  if (args.length !== 1) {
+    throw new Error(`usage: ${commandName} <url>`);
+  }
+
+  const url = args[0];
+
+  const feed = await getFeedByUrl(url);
+
+  if (!feed) {
+    throw new Error(`Feed ${url} not found`);
+  }
+
+  await deleteFeedFollow(feed, user);
+
+  console.log(`${user.name} unfollowed feed ${feed.name}`);
 }
