@@ -1,21 +1,36 @@
 import { getNextFeedToFetch, markFeedFetched } from "src/db/queries/feeds";
 import { fetchFeed } from "../utils/rss";
+import { parseDuration } from "../utils/time";
 
 export async function handlerAggregate(commandName: string, ...args: string[]) {
   if (args.length !== 1) {
     throw new Error(`usage: ${commandName} <time_between_reqs>`);
   }
 
-  const durationStr = args[0];
-  const duration = parseDuration(durationStr);
+  const timeArg = args[0];
+  const timeBetweenRequests = parseDuration(timeArg);
 
-  // TODO: implement scheduling logic here
+  if (!timeBetweenRequests) {
+    throw new Error(
+      `invalid duration: ${timeArg} — use format 1h 30m 15s or 1500ms`
+    );
+  }
 
-  // console.log(`Collecting feeds every`);
+  console.log(`Collecting feeds every ${timeArg}...`);
 
-  // const feedData = await fetchFeed(feedURL);
-  // const feedDataStr = JSON.stringify(feedData, null, 2);
-  // console.dir(feedDataStr);
+  scrapeFeeds().catch(handleError);
+
+  const interval = setInterval(() => {
+    scrapeFeeds().catch(handleError);
+  }, timeBetweenRequests);
+
+  await new Promise<void>(resolve => {
+    process.on("SIGINT", () => {
+      console.log("Shutting down feed aggregator");
+      clearInterval(interval);
+      resolve();
+    });
+  });
 }
 
 export async function scrapeFeeds() {
@@ -25,18 +40,13 @@ export async function scrapeFeeds() {
   const feedData = await fetchFeed(nextFeed.url);
   console.log(`Fetched data from ${feedData.channel.title}`);
   for (const item of feedData.channel.item) {
-    console.log(`- ${item.title}`);
+    console.log(`    - ${item.title}`);
   }
+  console.log("\n");
 }
 
-function parseDuration(durationStr: string): number {
-  const regex = /^(\d+)(ms|s|m|h)$/;
-  const match = durationStr.match(regex);
-
-  if (!match) {
-    throw new Error(
-      "time_between_reqs should be in format '<time><unit_of_time>' eg: 1m"
-    );
-  }
-  return parseInt(match[1]);
+export function handleError(error: unknown) {
+  console.error(
+    `Error scraping feeds: ${error instanceof Error ? error.message : error}`
+  );
 }

@@ -56,5 +56,5 @@ export async function handlerRegister(commandName: string, ...args: string[]) {
   setUser(user.name);
 
   console.log("User was created successfully");
-  console.log(user);
+  // console.log(user);
 }
