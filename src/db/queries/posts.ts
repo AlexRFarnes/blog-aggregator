@@ -5,7 +5,7 @@ import { Feed, feedFollows, feeds, posts, User } from "../schema/schema";
 export async function createPost(
   title: string,
   url: string,
-  feed: Feed,
+  feedId: string,
   pubDate: string,
   description?: string
 ) {
@@ -14,7 +14,7 @@ export async function createPost(
     .values({
       title: title,
       url: url,
-      feedId: feed.id,
+      feedId: feedId,
       publishedAt: new Date(pubDate),
       description: description,
     })

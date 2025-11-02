@@ -41,6 +41,11 @@ export async function handlerAggregate(commandName: string, ...args: string[]) {
 
 export async function scrapeFeeds() {
   const nextFeed = await getNextFeedToFetch();
+  if (!nextFeed) {
+    console.log(`No feeds to fetch.`);
+    return;
+  }
+
   await markFeedFetched(nextFeed.id);
 
   const feedData = await fetchFeed(nextFeed.url);
@@ -48,8 +53,8 @@ export async function scrapeFeeds() {
   console.log(`Fetched data from ${feedData.channel.title}`);
 
   for (const item of feedData.channel.item) {
-    console.log(`Saving post ${item.title}...`);
-    await savePost(item, nextFeed.url);
+    console.log(`Found post ${item.title}...`);
+    await savePost(item, nextFeed.id);
   }
   console.log("\n");
 }
@@ -60,18 +65,14 @@ export function handleError(error: unknown) {
   );
 }
 
-async function savePost(post: RSSItem, feedUrl: string) {
+async function savePost(post: RSSItem, feedId: string) {
   const { title, link, description, pubDate } = post;
+
   const date = new Date(pubDate);
+
   const publishedDate = !isNaN(date.getTime())
     ? date.toISOString()
     : new Date().toISOString();
 
-  const feed = await getFeedByUrl(feedUrl);
-
-  if (!feed) {
-    throw new Error(`Something went wrong retrieving ${feedUrl}`);
-  }
-
-  await createPost(title, link, feed, publishedDate, description.trim());
+  await createPost(title, link, feedId, publishedDate, description.trim());
 }

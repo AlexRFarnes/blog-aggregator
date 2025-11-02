@@ -15,7 +15,7 @@ export async function handlerBrowse(
     const trimmed = args[0].trim();
 
     if (trimmed === "" || isNaN(Number(trimmed))) {
-      throw new Error(`usage: ${commandName} <optional: limit>`);
+      throw new Error(`usage: ${commandName} [limit]`);
     }
     limit = Math.trunc(Number(trimmed));
   }
