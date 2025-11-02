@@ -14,6 +14,7 @@ import {
   getFeedFollowsForUser,
   handlerUnfollow,
 } from "./commands/follow";
+import { handlerBrowse } from "./commands/posts";
 import { middlewareLoggedIn } from "./utils/middleware";
 
 async function main() {
@@ -32,6 +33,7 @@ async function main() {
     middlewareLoggedIn(getFeedFollowsForUser)
   );
   registerCommand(commands, "unfollow", middlewareLoggedIn(handlerUnfollow));
+  registerCommand(commands, "browse", middlewareLoggedIn(handlerBrowse));
 
   const cliArgs = argv.slice(2);
 

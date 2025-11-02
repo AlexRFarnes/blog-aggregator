@@ -1,6 +1,12 @@
-import { getNextFeedToFetch, markFeedFetched } from "src/db/queries/feeds";
+import {
+  getFeedByUrl,
+  getNextFeedToFetch,
+  markFeedFetched,
+} from "src/db/queries/feeds";
 import { fetchFeed } from "../utils/rss";
 import { parseDuration } from "../utils/time";
+import { createPost } from "src/db/queries/posts";
+import { type RSSItem } from "../utils/rss";
 
 export async function handlerAggregate(commandName: string, ...args: string[]) {
   if (args.length !== 1) {
@@ -38,9 +44,12 @@ export async function scrapeFeeds() {
   await markFeedFetched(nextFeed.id);
 
   const feedData = await fetchFeed(nextFeed.url);
+
   console.log(`Fetched data from ${feedData.channel.title}`);
+
   for (const item of feedData.channel.item) {
-    console.log(`    - ${item.title}`);
+    console.log(`Saving post ${item.title}...`);
+    await savePost(item, nextFeed.url);
   }
   console.log("\n");
 }
@@ -49,4 +58,20 @@ export function handleError(error: unknown) {
   console.error(
     `Error scraping feeds: ${error instanceof Error ? error.message : error}`
   );
+}
+
+async function savePost(post: RSSItem, feedUrl: string) {
+  const { title, link, description, pubDate } = post;
+  const date = new Date(pubDate);
+  const publishedDate = !isNaN(date.getTime())
+    ? date.toISOString()
+    : new Date().toISOString();
+
+  const feed = await getFeedByUrl(feedUrl);
+
+  if (!feed) {
+    throw new Error(`Something went wrong retrieving ${feedUrl}`);
+  }
+
+  await createPost(title, link, feed, publishedDate, description.trim());
 }

@@ -9,7 +9,7 @@ type RSSFeed = {
   };
 };
 
-type RSSItem = {
+export type RSSItem = {
   title: string;
   link: string;
   description: string;
@@ -67,7 +67,7 @@ export async function fetchFeed(feedURL: string): Promise<RSSFeed> {
     if (!item.title || !item.link || !item.description || !item.pubDate)
       continue;
 
-    const { title, link, description, pubDate } = item;
+    const { title, link, description, pubDate } = item; // item here can have additional unwanted fields
     rssItems.push({ title, link, description, pubDate });
   }
 

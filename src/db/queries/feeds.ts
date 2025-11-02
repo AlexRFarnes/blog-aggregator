@@ -30,7 +30,7 @@ export async function getFeedByUrl(url: string) {
 export async function markFeedFetched(id: string) {
   await db
     .update(feeds)
-    .set({ updatedAt: new Date(), lastFetchedAt: new Date() })
+    .set({ lastFetchedAt: new Date() })
     .where(eq(feeds.id, id));
 }
 
